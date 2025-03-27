@@ -23,6 +23,8 @@ class View {
     /** Current base url */
     private ?string $baseUrl = null;
 
+    private ?string $basePath = null;
+
     private Configuration $configuration;
 
     /**
@@ -30,6 +32,14 @@ class View {
      */
     public function __construct(Configuration $configuration) {
         $this->configuration = $configuration;
+    }
+
+    public function getBasePath(): string {
+        if ($this->baseUrl === null) {
+            $this->baseUrl = $this->makeBaseUrl();
+        }
+
+        return $this->basePath;
     }
 
     /**
@@ -50,6 +60,7 @@ class View {
         $base = $this->configuration->baseUrl;
         if ($base !== '') {
             $base = str_ends_with($base, '/') ? $base : ($base . '/');
+            $this->basePath = parse_url($base, PHP_URL_PATH) . '/';
         } else { // auto generate base url
             $protocol = 'http';
             if ((isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
@@ -83,6 +94,7 @@ class View {
             }
 
             $base = $protocol . '://' . $host . $port . $subdir . '/';
+            $this->basePath = $subdir . '/';
         }
 
         return $base;

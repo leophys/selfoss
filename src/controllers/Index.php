@@ -55,7 +55,7 @@ class Index {
             }
 
             // show as full html page
-            echo str_replace('@basePath@', $this->router->getBasePath(), $homeData);
+            echo str_replace('@basePath@', $this->view->getBasePath(), $homeData);
 
             return;
         }
